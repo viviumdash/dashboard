@@ -87,4 +87,7 @@ bij de KPI's kan je nu ook de voorgaande jaren tonen
 tabbalk is aangepast zodat je bij kleinere schermresoluties toch nog alle keuzes ziet
 keuzes voor categorieën duidelijker gemaakt en op andere, meer consistente positie naast mogelijkheid voor tonen alle jaren
 keuzeknop alles tonen/beperkte weergave hernoemd naar alles uitklappen/inklappen
-
+info ultimo vermeld onder titelbalk, zodat je meteen ook kan zien tot welke ultimo datum info op dashboard staat
+tabbalk aangepast zodat die op één lijn past op laptopschermen VIVIUM resolutie 1920x1200 (stond voorheen op 2 lijnen)
+in de taartinfo bij schade naast verdeling schadelast ook de S/P's vermeld in hover-over
+door te klikken op versienummer rechtsboven, krijg je nu ook de releasenotes te zien

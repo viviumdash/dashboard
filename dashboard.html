@@ -358,6 +358,7 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute
 .brokerInfo{display:flex;justify-content:space-between;gap:16px;align-items:center;background:linear-gradient(135deg,var(--blue),#1f6fb2);border:1px solid #8fb4dc;border-radius:var(--radius);box-shadow:0 18px 42px rgba(0,59,113,.13);padding:16px 18px;margin:0 0 var(--stack-gap);color:#fff;position:relative}
 .brokerInfo .label{font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:950;color:#dcecff}
 .brokerInfo .brokerName{font-size:21px;font-weight:950;margin-top:4px;color:#fff}
+.brokerInfo .brokerPeriod{margin-top:7px;text-transform:none;letter-spacing:.02em}
 .brokerTextBlock{min-width:0;flex:1}
 .brokerLogo{height:34px;width:auto;max-width:150px;object-fit:contain;opacity:.96;flex:0 0 auto}
 
@@ -1430,6 +1431,11 @@ body:before{
 #tabDetail:before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E")}
 .tab.active{background:linear-gradient(135deg,var(--blue3),var(--blue));border-color:transparent;color:#fff;box-shadow:0 14px 30px rgba(31,111,178,.25);}
 .tab.active::after{display:none;}
+@media(min-width:681px) and (max-width:1600px){
+  .tabs{flex-wrap:nowrap;padding:6px;gap:3px;justify-content:space-between}
+  .tab{padding:9px 11px;min-height:42px;font-size:13px;border-radius:13px;min-width:0}
+  .tab:before{width:15px;height:15px;margin-right:5px;flex:0 0 auto}
+}
 .section.active{animation:tabFadeIn .22s ease both;}
 @keyframes tabFadeIn{from{opacity:.55;transform:translateY(5px)}to{opacity:1;transform:none}}
 
@@ -1574,6 +1580,7 @@ body.topInfoReady .topCompactActions #topInfoToggleBtn{order:9}
       <div class="brokerTextBlock">
         <div id="brokerInfoLabel" class="label">Makelaar / koepelnummer</div>
         <div id="brokerName" class="brokerName"></div>
+        <div id="brokerPeriod" class="label brokerPeriod"></div>
       </div>
       <img src="data:image/png;base64,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" alt="Vivium" class="brokerLogo" id="brokerLogoImg">
     </div>
@@ -1616,7 +1623,7 @@ body.topInfoReady .topCompactActions #topInfoToggleBtn{order:9}
       <button class="tab" data-tab="progressie" id="tabProgressie">Progressie</button>
       <button class="tab" data-tab="schade" id="tabSchade">Schade</button>
       <button class="tab" data-tab="portefeuille" id="tabPortefeuille">Portefeuille</button>
-      <button class="tab" data-tab="detail" id="tabDetail">Detail per categorie</button>
+      <button class="tab" data-tab="detail" id="tabDetail">Detail</button>
       <button class="tab" data-tab="view360" id="tab360">360-view</button>
       <button class="tab" data-tab="kpiOverzicht" id="tabKpis">KPI's</button>
     </div>
@@ -1947,7 +1954,7 @@ const I18N = {
     uploadTitle: 'Klik of sleep de PDF hierheen', uploadHint: 'NL of FR', importPdf: 'Importeer', downloadCsv: 'Download CSV', exportPdf: 'Exporteer PDF', pdfBusy: 'PDF wordt gemaakt…', pdfOptionsTitle: 'PDF secties', pdfNoSections: 'Selecteer minstens één PDF-sectie.', noPdf: 'Nog geen PDF geladen.', processing: '⏳ PDF verwerken…',
     success: n => '✅ PDF geladen & verwerkt: ' + n + ' datarijen. Percentages en schade-totalen komen rechtstreeks uit de PDF.', error: '❌ Fout bij verwerken PDF: ',
     broker: 'Makelaar', koepelnummer: 'koepelnummer', groepsnummer: 'groepsnummer', vs: 'vs', main: 'Hoofd', sub: 'Sub', lowerPositive: 'daling is positief', lowerBetter: 'schade: lager is beter', viewModeLabel: 'Weergave', viewAll: 'Hoofd- en subcategorieën', viewMainOnly: 'Hoofdcategorieën', viewSubOnly: 'Subcategorieën', previousYears: 'Vorige jaren', drillDown: 'Alles inklappen', drillDownActive: 'Alles uitklappen', importControlTitle: 'Importcontrole', importControlSub: 'Snelle controle of de PDF correct werd geïnterpreteerd', importPeriods: 'Aantal periodes gevonden', importLatestPeriod: 'Laatste periode gevonden', importTotalProd: 'TOTAAL NON LIFE productie', importTotalSchade: 'TOTAAL NON LIFE schade', importSpPct: 'S/P % correct gelezen', importBroker: 'Makelaar/koepelnummer', yes: 'Ja', no: 'Nee', topCompactTitle: 'PDF import & controle', topShow: 'Toon importinformatie', topHide: 'Verberg importinformatie', topOk: 'Importcontrole OK', topAttention: n => n + ' aandachtspunt' + (n === 1 ? '' : 'en'), topPeriodsShort: 'periodes', topLatestShort: 'laatste',
-    tabSamenvatting: 'Samenvatting', tab360: '360-view', tabProductie: 'Productie', tabVerval: 'Verval', tabProgressie: 'Progressie', tabSchade: 'Schade', tabPortefeuille: 'Portefeuille', tabKpis: "KPI's", tabDetail: 'Detail per categorie', kpiSelectorLabel: "KPI's", kpiSelectorAll: "Alle KPI's", kpiSelectorCount: n => n + " KPI-sectie" + (n === 1 ? '' : 's'), kpiOverviewEmpty: 'Selecteer minstens één KPI-sectie.',
+    tabSamenvatting: 'Samenvatting', tab360: '360-view', tabProductie: 'Productie', tabVerval: 'Verval', tabProgressie: 'Progressie', tabSchade: 'Schade', tabPortefeuille: 'Portefeuille', tabKpis: "KPI's", tabDetail: 'Detail', kpiSelectorLabel: "KPI's", kpiSelectorAll: "Alle KPI's", kpiSelectorCount: n => n + " KPI-sectie" + (n === 1 ? '' : 's'), kpiOverviewEmpty: 'Selecteer minstens één KPI-sectie.',
     prodTitle: 'Productie', vervalTitle: 'Verval', progTitle: 'Progressie', schadeTitle: 'Schade', portefeuilleTitle: 'Portefeuille: verdiende premie', detailTitle: 'Hoofd- en subcategorieën',
     prodNote: 'De gegevens hieronder tonen per hoofdcategorie eerst de hoofdrij en daaronder alle subcategorieën uit de CSV.', portefeuilleNote: 'De grafieken hieronder tonen de verdiende premie op TOTAAL NON LIFE-niveau: eerst de drie meest recente volledige jaren, daarnaast de laatste periode vorig jaar tegenover de laatste periode dit jaar.', portefeuilleSub: (a,b) => 'Verdiende premie TOTAAL NON LIFE. Volledige jaren apart; laatste periode: ' + a + ' versus ' + b + '.', portefeuilleYears: 'Voorbije 3 jaar', portefeuilleComparison: 'Laatste periode J vs J-1', portefeuilleEmpty: 'Geen portefeuillegegevens gevonden.', vorigJaar: 'Vorig jaar', huidigJaar: 'Dit jaar', vervalNote: 'De gegevens hieronder tonen per hoofdcategorie eerst de hoofdrij en daaronder alle subcategorieën uit de CSV, inclusief verval door klant en maatschappij.', progNote: 'Progressie wordt getoond als productie - verval + transformatie, per hoofdcategorie en subcategorie zoals aangeleverd in de CSV.', schadeNote: 'Interpretatie schade: een daling van schadegevallen, schadelast of S/P is positief en wordt groen weergegeven, een stijging is negatief.',
     comparison: (a,b) => 'Vergelijking ' + a + ' versus ' + b + '.', schadeComparison: (a,b) => 'Vergelijking ' + a + ' versus ' + b + '. Voor schade zijn lagere waarden beter: dalende schadelast en dalende S/P worden positief getoond.',
@@ -1961,7 +1968,7 @@ const I18N = {
     uploadTitle: 'Cliquez ou glissez le PDF ici', uploadHint: 'NL ou FR', importPdf: 'Importer', downloadCsv: 'Télécharger CSV', exportPdf: 'Exporter PDF', pdfBusy: 'Création du PDF…', pdfOptionsTitle: 'Sections PDF', pdfNoSections: 'Sélectionnez au moins une section PDF.', noPdf: 'Aucun PDF chargé.', processing: '⏳ Traitement du PDF…',
     success: n => '✅ PDF chargé & traité : ' + n + ' lignes de données. Les pourcentages et totaux sinistres proviennent directement du PDF.', error: '❌ Erreur lors du traitement du PDF : ',
     broker: 'Courtier', koepelnummer: 'n° coupole', groepsnummer: 'n° groupe', vs: 'vs', main: 'Principal', sub: 'Sous-cat.', lowerPositive: 'baisse positive', lowerBetter: 'sinistres : plus bas est meilleur', viewModeLabel: 'Affichage', viewAll: 'Tout', viewMainOnly: 'Catégories principales', viewSubOnly: 'Sous-catégories', previousYears: 'Années précédentes', drillDown: 'Tout replier', drillDownActive: 'Tout déplier', importControlTitle: 'Contrôle import', importControlSub: 'Contrôle rapide de l’interprétation du PDF', importPeriods: 'Nombre de périodes', importLatestPeriod: 'Dernière période trouvée', importTotalProd: 'TOTAL NON VIE production', importTotalSchade: 'TOTAL NON VIE sinistres', importSpPct: 'S/P % lu correctement', importBroker: 'Courtier/n° coupole', yes: 'Oui', no: 'Non', topCompactTitle: 'Import PDF & contrôle', topShow: 'Afficher les informations import', topHide: 'Masquer les informations import', topOk: 'Contrôle import OK', topAttention: n => n + ' point' + (n === 1 ? '' : 's') + ' d’attention', topPeriodsShort: 'périodes', topLatestShort: 'dernière',
-    tabSamenvatting: 'Résumé', tab360: 'Vue 360', tabProductie: 'Production', tabVerval: 'Chute', tabProgressie: 'Progression', tabSchade: 'Sinistres', tabPortefeuille: 'Portefeuille', tabKpis: 'KPI', tabDetail: 'Détail par catégorie', kpiSelectorLabel: 'KPI', kpiSelectorAll: 'Tous les KPI', kpiSelectorCount: n => n + ' section' + (n === 1 ? '' : 's') + ' KPI', kpiOverviewEmpty: 'Sélectionnez au moins une section KPI.',
+    tabSamenvatting: 'Résumé', tab360: 'Vue 360', tabProductie: 'Production', tabVerval: 'Chute', tabProgressie: 'Progression', tabSchade: 'Sinistres', tabPortefeuille: 'Portefeuille', tabKpis: 'KPI', tabDetail: 'Détail', kpiSelectorLabel: 'KPI', kpiSelectorAll: 'Tous les KPI', kpiSelectorCount: n => n + ' section' + (n === 1 ? '' : 's') + ' KPI', kpiOverviewEmpty: 'Sélectionnez au moins une section KPI.',
     prodTitle: 'Production', vervalTitle: 'Chute', progTitle: 'Progression', schadeTitle: 'Sinistres', portefeuilleTitle: 'Portefeuille : prime acquise', detailTitle: 'Catégories principales et sous-catégories',
     prodNote: 'Les données ci-dessous affichent d’abord la ligne principale par catégorie, puis toutes les sous-catégories du CSV.', portefeuilleNote: 'Les graphiques ci-dessous affichent la prime acquise au niveau TOTAL NON VIE : d’abord les trois dernières années complètes, puis la dernière période de l’année passée face à la dernière période de cette année.', portefeuilleSub: (a,b) => 'Prime acquise TOTAL NON VIE. Années complètes séparées ; dernière période : ' + a + ' versus ' + b + '.', portefeuilleYears: '3 dernières années', portefeuilleComparison: 'Dernière période A vs A-1', portefeuilleEmpty: 'Aucune donnée portefeuille trouvée.', vorigJaar: 'Année passée', huidigJaar: 'Cette année', vervalNote: 'Les données ci-dessous affichent d’abord la ligne principale par catégorie, puis toutes les sous-catégories du CSV, y compris la chute client et compagnie.', progNote: 'La progression est affichée comme production - chute + transformation, par catégorie principale et sous-catégorie telle que fournie dans le CSV.', schadeNote: 'Interprétation sinistres : une baisse du nombre de sinistres, de la charge sinistre ou du S/P est positive et s’affiche en vert. Une hausse est négative. Les données ci-dessous affichent d’abord la ligne principale par catégorie, puis toutes les sous-catégories du CSV.',
     comparison: (a,b) => 'Comparaison ' + a + ' versus ' + b + '.', schadeComparison: (a,b) => 'Comparaison ' + a + ' versus ' + b + '. Pour les sinistres, des valeurs plus basses sont meilleures : une baisse de la charge sinistre et du S/P est positive.',
@@ -2632,6 +2639,13 @@ function renderBrokerInfo() {
     }
     const displayName = brokerDisplayName();
     $('brokerName').textContent = displayName;
+    const latestPeriod = String(dashboardCurrentPeriod || '').trim().replace(/[\/.\-]+/g, ' ');
+    const periodEl = $('brokerPeriod');
+    if (periodEl) {
+      periodEl.textContent = latestPeriod
+        ? `${currentLang === 'fr' ? 'Données ultimo' : 'Gegevens ultimo'}: ${latestPeriod}`
+        : '';
+    }
     $('brokerInfo').classList.remove('hidden');
   } else {
     $('brokerInfo').classList.add('hidden');
@@ -3661,13 +3675,13 @@ function build(data) {
   if (rowsOf(data, 'SCHADE').length && !totalSchadeCurr[cols.hoofd]) throw new Error(`geen TOTAAL NON LIFE-rij gevonden voor SCHADE ${currP}`);
   $('dashboard').classList.remove('hidden');
   applyDashboardDisplayModes();
+  dashboardPreviousPeriod = prevP;
+  dashboardCurrentPeriod = currP;
   renderBrokerInfo();
   renderImportControl(data, currP);
   ['prodSub', 'vervalSub', 'progSub', 'detailSub'].forEach(id => $(id).textContent = msg('comparison', prevP, currP));
   $('schadeSub').textContent = msg('schadeComparison', prevP, currP);
   $('portefeuilleSub').textContent = msg('portefeuilleSub', prevP, currP);
-  dashboardPreviousPeriod = prevP;
-  dashboardCurrentPeriod = currP;
   updateSectionPeriodInline(prevP, currP);
   lastKpiContext = {
     summary: summaryKpiItems(totalProdPrev, totalProdCurr, totalSchadePrev, totalSchadeCurr),
@@ -4719,27 +4733,35 @@ function view360PiePanelsHtml(prefix, prevTitle, currTitle, tooltipClass = '') {
         <div id="${prefix}CurrLegend" class="pieLegend"></div>
       </div>
     </div>
-  </div><div id="${prefix}Tooltip" class="pieTooltip portfolioPieTooltip ${tooltipClass}"></div>`;
+  </div><div id="${prefix}Tooltip" class="pieTooltip portfolioPieTooltip view360RuntimeTooltip ${tooltipClass}"></div>`;
 }
-function renderView360ProductionPies(data, prevP, currP) {
-  const prevItems = getProductionPieItems(data, prevP, 'productie').map((x, i) => ({ ...x, color: pieSegmentColor(x.key, i) }));
-  const currItems = getProductionPieItems(data, currP, 'productie').map((x, i) => ({ ...x, color: pieSegmentColor(x.key, i) }));
-  renderStaticPieLegend($('view360ProdPiePrevLegend'), prevItems, msg('productionPieEmpty'));
-  renderStaticPieLegend($('view360ProdPieCurrLegend'), currItems, msg('productionPieEmpty'));
-  const prevCanvas = $('view360ProdPiePrevCanvas'), currCanvas = $('view360ProdPieCurrCanvas');
-  if (prevCanvas) prevCanvas.dataset.tooltipId = 'view360ProdPieTooltip';
-  if (currCanvas) currCanvas.dataset.tooltipId = 'view360ProdPieTooltip';
-  drawPortfolioPie(prevCanvas, prevP, prevItems, -1, msg('productie'));
-  drawPortfolioPie(currCanvas, currP, currItems, -1, msg('productie'));
+function renderView360ComparisonPies(data, prevP, currP, mode, prefix) {
+  const prevItems = getProductionPieItems(data, prevP, mode).map((x, i) => ({ ...x, color: pieSegmentColor(x.key, i) }));
+  const currItems = getProductionPieItems(data, currP, mode).map((x, i) => ({ ...x, color: pieSegmentColor(x.key, i) }));
+  const emptyKey = mode === 'schade' ? 'schadePieEmpty' : 'productionPieEmpty';
+  renderStaticPieLegend($(`${prefix}PrevLegend`), prevItems, msg(emptyKey));
+  renderStaticPieLegend($(`${prefix}CurrLegend`), currItems, msg(emptyKey));
+  const prevCanvas = $(`${prefix}PrevCanvas`), currCanvas = $(`${prefix}CurrCanvas`);
+  if (prevCanvas) prevCanvas.dataset.tooltipId = `${prefix}Tooltip`;
+  if (currCanvas) currCanvas.dataset.tooltipId = `${prefix}Tooltip`;
+  const centerText = mode === 'schade' ? msg('schadelast') : msg('productie');
+  drawPortfolioPie(prevCanvas, prevP, prevItems, -1, centerText);
+  drawPortfolioPie(currCanvas, currP, currItems, -1, centerText);
   attachPortfolioPieHover(prevCanvas);
   attachPortfolioPieHover(currCanvas);
-  attachPieLegendHover($('view360ProdPiePrevLegend'), prevCanvas, 'view360ProdPieTooltip');
-  attachPieLegendHover($('view360ProdPieCurrLegend'), currCanvas, 'view360ProdPieTooltip');
-  const totalLabel = pieComparisonTotalLabel('productie');
+  attachPieLegendHover($(`${prefix}PrevLegend`), prevCanvas, `${prefix}Tooltip`);
+  attachPieLegendHover($(`${prefix}CurrLegend`), currCanvas, `${prefix}Tooltip`);
+  const totalLabel = pieComparisonTotalLabel(mode);
   const prevTotal = prevItems.reduce((sum, x) => sum + x.value, 0);
   const currTotal = currItems.reduce((sum, x) => sum + x.value, 0);
-  if ($('view360ProdPiePrevTotal')) $('view360ProdPiePrevTotal').innerHTML = `${totalLabel}: <b>${euro.format(prevTotal)}</b>`;
-  if ($('view360ProdPieCurrTotal')) $('view360ProdPieCurrTotal').innerHTML = `${totalLabel}: <b>${euro.format(currTotal)}</b>`;
+  if ($(`${prefix}PrevTotal`)) $(`${prefix}PrevTotal`).innerHTML = `${totalLabel}: <b>${euro.format(prevTotal)}</b>`;
+  if ($(`${prefix}CurrTotal`)) $(`${prefix}CurrTotal`).innerHTML = `${totalLabel}: <b>${euro.format(currTotal)}</b>`;
+}
+function renderView360ProductionPies(data, prevP, currP) {
+  renderView360ComparisonPies(data, prevP, currP, 'productie', 'view360ProdPie');
+}
+function renderView360SchadePies(data, prevP, currP) {
+  renderView360ComparisonPies(data, prevP, currP, 'schade', 'view360SchadePie');
 }
 function renderView360PortfolioPies(data, currP) {
   const yearItems = getPortfolioYearItems(data, 'TOTAAL NON LIFE', currP);
@@ -5030,6 +5052,7 @@ function view360KmoAnalysisHtml(data, prevP, currP, config) {
 function render360View() {
   const target = $('view360Content');
   if (!target) return;
+  document.querySelectorAll('body > .view360RuntimeTooltip').forEach(el => el.remove());
   if (!lastKpiContext || !lastData || !dashboardPreviousPeriod || !dashboardCurrentPeriod) {
     target.innerHTML = '';
     return;
@@ -5039,6 +5062,7 @@ function render360View() {
   const vervalItems = categoryKpiItems(lastData, 'verval', prevP, currP) || [];
   const schadeItems = categoryKpiItems(lastData, 'schade', prevP, currP) || [];
   const prodPrevFull = getPreviousFullYearPeriodForPie(lastData, currP, 'productie') || prevP;
+  const schadePrevFull = getPreviousFullYearPeriodForPie(lastData, currP, 'schade') || prevP;
   const portYearItems = getPortfolioYearItems(lastData, 'TOTAAL NON LIFE', currP);
   const portPrevFull = portYearItems[portYearItems.length - 1]?.period || prevP;
   const leftTitle = currentLang === 'fr' ? 'Année complète + période' : 'Vorig volledig jaar + periode';
@@ -5056,10 +5080,13 @@ function render360View() {
     `<div class="view360PortfolioCard"><h3>${esc(portfolioEvolutionTitle)}</h3><div class="portfolioGrid"><div class="portfolioChartCard"><h3>${esc(leftTitle)}</h3>${portfolioPeriodComparisonBars(lastData, 'TOTAAL NON LIFE', prevP, currP)}</div><div class="portfolioChartCard"><h3>${esc(msg('portefeuilleComparison'))}</h3>${hasPortCompare ? portfolioAmountSummary(prevP, currP, portPrevVal, portCurrVal) : `<div class="portfolioNoData">${msg('portefeuilleEmpty')}</div>`}</div></div></div>`,
     `<div class="portfolioPieCard view360PieCard"><div class="portfolioPieHeader"><h2>${esc(portPieTitle)}</h2></div>${view360PiePanelsHtml('view360PortPie', (currentLang === 'fr' ? 'Année complète précédente · ' : 'Volledig voorgaand jaar · ') + portPrevFull, (currentLang === 'fr' ? 'Dernière période · ' : 'Laatste periode · ') + currP)}</div>`,
     `<div class="view360Block"><h3>S/P</h3><div class="kpis kpiOverviewGrid">${view360KpiCardsWithHistoryHtml(lastData, schadeKpiMetricItems(schadeItems, false), prevP, currP, { sourceType: 'SCHADE', field: cols.sp, cellIndex: 18, type: 'pct', invert: true })}</div></div>`,
-    `<div class="view360Block"><h3>${esc(msg('spAfgetopt'))}</h3><div class="kpis kpiOverviewGrid">${view360KpiCardsWithHistoryHtml(lastData, schadeKpiMetricItems(schadeItems, true), prevP, currP, { sourceType: 'SCHADE', field: cols.spCap, cellIndex: 20, type: 'pct', invert: true })}</div></div>`
+    `<div class="view360Block"><h3>${esc(msg('spAfgetopt'))}</h3><div class="kpis kpiOverviewGrid">${view360KpiCardsWithHistoryHtml(lastData, schadeKpiMetricItems(schadeItems, true), prevP, currP, { sourceType: 'SCHADE', field: cols.spCap, cellIndex: 20, type: 'pct', invert: true })}</div></div>`,
+    `<div class="portfolioPieCard view360PieCard"><div class="portfolioPieHeader"><h2>${esc(msg('schadePieTitle'))}</h2></div>${view360PiePanelsHtml('view360SchadePie', pieComparisonPanelTitle('prevFull', schadePrevFull), pieComparisonPanelTitle('curr', currP))}</div>`
   ].join('');
+  target.querySelectorAll('.view360RuntimeTooltip').forEach(tooltip => document.body.appendChild(tooltip));
   renderView360ProductionPies(lastData, prodPrevFull, currP);
   renderView360PortfolioPies(lastData, currP);
+  renderView360SchadePies(lastData, schadePrevFull, currP);
   attachPortfolioBarHover(target);
 }
 function updateTopKpisForActiveTab() {
@@ -5815,10 +5842,19 @@ function renderPortfolioPieLegend(el, items) {
   }).join('');
 }
 
+function pieHoverTooltipHtml(segment, total) {
+  const share = total ? segment.value / total * 100 : 0;
+  const base = `${euro.format(segment.value)} = ${pct.format(share)}%`;
+  const schadeExtra = segment.isSchade
+    ? ` | S/P ${pct.format(segment.sp)}% | ${currentLang === 'fr' ? 'S/P écrêté' : 'Afgetopte S/P'} ${pct.format(segment.spCap)}%`
+    : '';
+  return `<strong>${esc(segment.label)}</strong><span class="muted">${base}${schadeExtra}</span>`;
+}
+
 function attachPieLegendHover(legendEl, canvas, tooltipId = 'portfolioPieTooltip') {
   if (!legendEl || !canvas || legendEl._pieLegendHoverAttached) return;
   legendEl._pieLegendHoverAttached = true;
-  const sourceItems = state => (state?.segments || []).map(({key, label, value, color}) => ({key, label, value, color}));
+  const sourceItems = state => (state?.segments || []).map(({start, end, total, ...item}) => item);
   const segmentClientPoint = (state, seg) => {
     const rect = canvas.getBoundingClientRect();
     const mid = (seg.start + seg.end) / 2;
@@ -5839,7 +5875,7 @@ function attachPieLegendHover(legendEl, canvas, tooltipId = 'portfolioPieTooltip
     const seg = freshState.segments[idx];
     if (tooltip) {
       const pnt = segmentClientPoint(freshState, seg);
-      tooltip.innerHTML = `<strong>${esc(seg.label)}</strong><span class="muted">${euro.format(seg.value)} · ${pct.format(seg.value / freshState.total * 100)}%</span>`;
+      tooltip.innerHTML = pieHoverTooltipHtml(seg, freshState.total);
       tooltip.style.display = 'block';
       tooltip.style.left = pnt.x + 'px';
       tooltip.style.top = pnt.y + 'px';
@@ -5886,7 +5922,7 @@ function attachPortfolioPieHover(canvas) {
       return a >= start && a <= end;
     });
   };
-  const sourceItems = state => (state?.segments || []).map(({key, label, value, color}) => ({key, label, value, color}));
+  const sourceItems = state => (state?.segments || []).map(({start, end, total, ...item}) => item);
   canvas.addEventListener('mousemove', e => {
     const state = canvas._portfolioPieState;
     const tooltip = $(canvas.dataset.tooltipId || 'portfolioPieTooltip');
@@ -5899,7 +5935,7 @@ function attachPortfolioPieHover(canvas) {
       if (state.hoverIndex !== idx) drawPortfolioPie(canvas, state.period, sourceItems(state), idx, state.centerText);
       const freshState = canvas._portfolioPieState;
       const seg = freshState.segments[idx];
-      tooltip.innerHTML = `<strong>${esc(seg.label)}</strong><span class="muted">${euro.format(seg.value)} · ${pct.format(seg.value / freshState.total * 100)}%</span>`;
+      tooltip.innerHTML = pieHoverTooltipHtml(seg, freshState.total);
       tooltip.style.display = 'block';
       tooltip.style.left = e.clientX + 'px';
       tooltip.style.top = e.clientY + 'px';
@@ -6247,15 +6283,24 @@ function getProductionPieItems(data, period, mode = 'productie') {
     'Arbeidsongevallen': ['Arbeidsongevallen', 'Accidents de Travail']
   };
   const norm = v => String(v || '').trim().toUpperCase();
-  const findValue = key => {
+  const findRow = key => {
     const keys = (aliases[key] || [key]).map(norm);
-    const row = keys.flatMap(alias => rowsOfPeriodSub(data, sourceType, period, alias))[0] ||
+    return keys.flatMap(alias => rowsOfPeriodSub(data, sourceType, period, alias))[0] ||
       keys.flatMap(alias => rowsOfPeriodHeadSub(data, sourceType, period, alias, alias))[0] || {};
-    return n(row[field]);
   };
   return wanted.map(item => {
-    const value = item.sum ? item.sum.reduce((sum, key) => sum + findValue(key), 0) : findValue(item.key);
-    return { key: item.key, label: pieCategoryLabel(item.key), value };
+    const rows = (item.sum || [item.key]).map(findRow);
+    const value = rows.reduce((sum, row) => sum + n(row[field]), 0);
+    const result = { key: item.key, label: pieCategoryLabel(item.key), value };
+    if (mode === 'schade') {
+      const earned = rows.reduce((sum, row) => sum + n(row[cols.verdiend]), 0);
+      const schade = rows.reduce((sum, row) => sum + n(row[cols.schadelast]), 0);
+      const schadeCap = rows.reduce((sum, row) => sum + n(row[cols.schadeCap]), 0);
+      result.isSchade = true;
+      result.sp = rows.length === 1 ? n(rows[0][cols.sp]) : (earned ? schade / earned * 100 : 0);
+      result.spCap = rows.length === 1 ? n(rows[0][cols.spCap]) : (earned ? schadeCap / earned * 100 : 0);
+    }
+    return result;
   }).filter(x => x.value > 0);
 }
 
