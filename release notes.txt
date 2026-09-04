@@ -91,3 +91,4 @@ info ultimo vermeld onder titelbalk, zodat je meteen ook kan zien tot welke ulti
 tabbalk aangepast zodat die op één lijn past op laptopschermen VIVIUM resolutie 1920x1200 (stond voorheen op 2 lijnen)
 in de taartinfo bij schade naast verdeling schadelast ook de S/P's vermeld in hover-over
 door te klikken op versienummer rechtsboven, krijg je nu ook de releasenotes te zien
+startpagina aantrekkelijker gemaakt met extra uitleg
