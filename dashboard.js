@@ -733,10 +733,6 @@ function setTopInfoCollapsed(collapsed) {
   renderTopCompactBar();
 }
 
-function toggleTopInfo() {
-  setTopInfoCollapsed(!topInfoCollapsed);
-}
-
 function setStatus(msg, warn = false) {
   const s = $('status');
   s.textContent = msg;
@@ -2264,160 +2260,59 @@ function compactCategoryLabelParts(label) {
 function compactProdBarLabelHtml(label) {
   return compactCategoryLabelParts(label).map(part => `<span>${esc(part)}</span>`).join('');
 }
-function renderProdBarChart(data, prevP, currP) {
-  const VIVIUM_BLUE   = '#003b71';
-  const VIVIUM_ORANGE = '#f58220';
+function renderPremiumBarChart(data, prevP, currP, field, lowerIsBetter = false) {
   const cats = [
     'Auto Vloten','Auto Niet Vloten',
     'Particulieren Brand','Particulieren BA',
     'Ondernemingen Brand','Ondernemingen BA',
     'Arbeidsongevallen','Rechtsbijstand'
   ];
-
-  const normV = v => String(v || '').trim().toUpperCase();
-  const getVal = key => {
+  const normV = value => String(value || '').trim().toUpperCase();
+  const getValue = (key, period) => {
     const aliases = portfolioCategoryAliases(key).map(normKey);
-    const get = period => {
-      const src = rowsOfPeriod(data, 'PRODUCTIE', period);
-      const candidates = src.filter(r => aliases.includes(normV(r[cols.sub])) || aliases.includes(normV(r[cols.hoofd])));
-      const withData = candidates.slice().reverse().find(r => n(r[cols.prodPremie]) !== 0);
-      return n((withData || candidates[candidates.length - 1] || {})[cols.prodPremie]);
-    };
-    return { prev: get(prevP), curr: get(currP) };
+    const candidates = rowsOfPeriod(data, 'PRODUCTIE', period)
+      .filter(row => aliases.includes(normV(row[cols.sub])) || aliases.includes(normV(row[cols.hoofd])));
+    const withData = candidates.slice().reverse().find(row => n(row[field]) !== 0);
+    return n((withData || candidates[candidates.length - 1] || {})[field]);
   };
-
   const items = cats.map(key => {
-    const { prev, curr } = getVal(key);
-    const d = yoy(prev, curr);
-    return { key, label: portfolioCategoryLabel(key), prev, curr, d };
-  }).filter(x => x.prev !== 0 || x.curr !== 0);
-
+    const prev = getValue(key, prevP);
+    const curr = getValue(key, currP);
+    return { label: portfolioCategoryLabel(key), prev, curr, d: yoy(prev, curr) };
+  }).filter(item => item.prev !== 0 || item.curr !== 0);
   if (!items.length) return '';
 
-  const max = Math.max(1, ...items.flatMap(x => [Math.abs(x.prev), Math.abs(x.curr)]));
-
-  const CHART_H = 120; // px hoogte van de grafiekzone
-  const barHtml   = [];
-  const deltaHtml = [];
-  const labelHtml = [];
-
-  items.forEach(x => {
-    const hPrev  = Math.max(2, Math.round(Math.abs(x.prev) / max * CHART_H));
-    const hCurr  = Math.max(2, Math.round(Math.abs(x.curr) / max * CHART_H));
-    const dClass = x.d > 0 ? 'pos' : x.d < 0 ? 'neg' : 'neu';
-    const dSign  = x.d >= 0 ? '+' : '';
-
-    barHtml.push(`<div class="prodBarCol">
-      <div class="prodBarPair">
-        <div class="prodBarStick prevPeriod"
-             style="height:${hPrev}px"
-             data-amount="${euro.format(x.prev)}"
-             data-period="${esc(prevP)}"
-             onmouseenter="showProdBarTip(event,this)"
-             onmouseleave="hideProdBarTip()"></div>
-        <div class="prodBarStick currPeriod"
-             style="height:${hCurr}px"
-             data-amount="${euro.format(x.curr)}"
-             data-period="${esc(currP)}"
-             onmouseenter="showProdBarTip(event,this)"
-             onmouseleave="hideProdBarTip()"></div>
-      </div>
-    </div>`);
-
-    deltaHtml.push(`<div class="prodBarDeltaCol ${dClass}">${dSign}${pct.format(x.d)}%</div>`);
-    labelHtml.push(`<div class="prodBarLabelCol" title="${esc(x.label)}">${compactProdBarLabelHtml(x.label)}</div>`);
+  const max = Math.max(1, ...items.flatMap(item => [Math.abs(item.prev), Math.abs(item.curr)]));
+  const chartHeight = 120;
+  const bars = [], deltas = [], labels = [];
+  items.forEach(item => {
+    const hPrev = Math.max(2, Math.round(Math.abs(item.prev) / max * chartHeight));
+    const hCurr = Math.max(2, Math.round(Math.abs(item.curr) / max * chartHeight));
+    const direction = lowerIsBetter ? -item.d : item.d;
+    const deltaClass = direction > 0 ? 'pos' : direction < 0 ? 'neg' : 'neu';
+    bars.push(`<div class="prodBarCol"><div class="prodBarPair">
+      <div class="prodBarStick prevPeriod" style="height:${hPrev}px" data-amount="${euro.format(item.prev)}" data-period="${esc(prevP)}" onmouseenter="showProdBarTip(event,this)" onmouseleave="hideProdBarTip()"></div>
+      <div class="prodBarStick currPeriod" style="height:${hCurr}px" data-amount="${euro.format(item.curr)}" data-period="${esc(currP)}" onmouseenter="showProdBarTip(event,this)" onmouseleave="hideProdBarTip()"></div>
+    </div></div>`);
+    deltas.push(`<div class="prodBarDeltaCol ${deltaClass}">${item.d >= 0 ? '+' : ''}${pct.format(item.d)}%</div>`);
+    labels.push(`<div class="prodBarLabelCol" title="${esc(item.label)}">${compactProdBarLabelHtml(item.label)}</div>`);
   });
-
-  const swatch = (color, op) => `<span class="prodBarSwatch" style="background:${color};opacity:${op}"></span>`;
-  const legendPrev = `${swatch(VIVIUM_BLUE, '.85')}${esc(prevP)}`;
-  const legendCurr = `${swatch(VIVIUM_ORANGE, '1')}${esc(currP)}`;
-
+  const swatch = (color, opacity) => `<span class="prodBarSwatch" style="background:${color};opacity:${opacity}"></span>`;
   return `<div class="prodBarChart">
-    <div class="prodBarLegend"><span>${legendPrev}</span><span>${legendCurr}</span></div>
-    <div class="prodBarGrid">${barHtml.join('')}</div>
-    <div class="prodBarDeltaRow">${deltaHtml.join('')}</div>
-    <div class="prodBarLabelRow">${labelHtml.join('')}</div>
+    <div class="prodBarLegend"><span>${swatch('#003b71', '.85')}${esc(prevP)}</span><span>${swatch('#f58220', '1')}${esc(currP)}</span></div>
+    <div class="prodBarGrid">${bars.join('')}</div>
+    <div class="prodBarDeltaRow">${deltas.join('')}</div>
+    <div class="prodBarLabelRow">${labels.join('')}</div>
   </div>`;
 }
-
+function renderProdBarChart(data, prevP, currP) {
+  return renderPremiumBarChart(data, prevP, currP, cols.prodPremie);
+}
 
 // ─── Verval-staafdiagram voor samenvatting ───────────────────────────────────
-// Zelfde categorieën en opbouw als productie, maar met omgekeerde kleurinterpretatie:
-//   – stijging verval = negatief/rood
-//   – daling verval = positief/groen
+// Dezelfde grafiek, met omgekeerde kleurinterpretatie: lager verval is beter.
 function renderVervalBarChart(data, prevP, currP) {
-  const VIVIUM_BLUE   = '#003b71';
-  const VIVIUM_ORANGE = '#f58220';
-  const cats = [
-    'Auto Vloten','Auto Niet Vloten',
-    'Particulieren Brand','Particulieren BA',
-    'Ondernemingen Brand','Ondernemingen BA',
-    'Arbeidsongevallen','Rechtsbijstand'
-  ];
-
-  const normV = v => String(v || '').trim().toUpperCase();
-  const getVal = key => {
-    const aliases = portfolioCategoryAliases(key).map(normKey);
-    const get = period => {
-      const src = rowsOfPeriod(data, 'PRODUCTIE', period);
-      const candidates = src.filter(r => aliases.includes(normV(r[cols.sub])) || aliases.includes(normV(r[cols.hoofd])));
-      const withData = candidates.slice().reverse().find(r => n(r[cols.vervalPremie]) !== 0);
-      return n((withData || candidates[candidates.length - 1] || {})[cols.vervalPremie]);
-    };
-    return { prev: get(prevP), curr: get(currP) };
-  };
-
-  const items = cats.map(key => {
-    const { prev, curr } = getVal(key);
-    const d = yoy(prev, curr);
-    return { key, label: portfolioCategoryLabel(key), prev, curr, d };
-  }).filter(x => x.prev !== 0 || x.curr !== 0);
-
-  if (!items.length) return '';
-
-  const max = Math.max(1, ...items.flatMap(x => [Math.abs(x.prev), Math.abs(x.curr)]));
-  const CHART_H = 120;
-  const barHtml   = [];
-  const deltaHtml = [];
-  const labelHtml = [];
-
-  items.forEach(x => {
-    const hPrev = Math.max(2, Math.round(Math.abs(x.prev) / max * CHART_H));
-    const hCurr = Math.max(2, Math.round(Math.abs(x.curr) / max * CHART_H));
-    const dClass = x.d > 0 ? 'neg' : x.d < 0 ? 'pos' : 'neu';
-    const dSign = x.d >= 0 ? '+' : '';
-
-    barHtml.push(`<div class="prodBarCol">
-      <div class="prodBarPair">
-        <div class="prodBarStick prevPeriod"
-             style="height:${hPrev}px"
-             data-amount="${euro.format(x.prev)}"
-             data-period="${esc(prevP)}"
-             onmouseenter="showProdBarTip(event,this)"
-             onmouseleave="hideProdBarTip()"></div>
-        <div class="prodBarStick currPeriod"
-             style="height:${hCurr}px"
-             data-amount="${euro.format(x.curr)}"
-             data-period="${esc(currP)}"
-             onmouseenter="showProdBarTip(event,this)"
-             onmouseleave="hideProdBarTip()"></div>
-      </div>
-    </div>`);
-
-    deltaHtml.push(`<div class="prodBarDeltaCol ${dClass}">${dSign}${pct.format(x.d)}%</div>`);
-    labelHtml.push(`<div class="prodBarLabelCol" title="${esc(x.label)}">${compactProdBarLabelHtml(x.label)}</div>`);
-  });
-
-  const swatch = (color, op) => `<span class="prodBarSwatch" style="background:${color};opacity:${op}"></span>`;
-  const legendPrev = `${swatch(VIVIUM_BLUE, '.85')}${esc(prevP)}`;
-  const legendCurr = `${swatch(VIVIUM_ORANGE, '1')}${esc(currP)}`;
-
-  return `<div class="prodBarChart">
-    <div class="prodBarLegend"><span>${legendPrev}</span><span>${legendCurr}</span></div>
-    <div class="prodBarGrid">${barHtml.join('')}</div>
-    <div class="prodBarDeltaRow">${deltaHtml.join('')}</div>
-    <div class="prodBarLabelRow">${labelHtml.join('')}</div>
-  </div>`;
+  return renderPremiumBarChart(data, prevP, currP, cols.vervalPremie, true);
 }
 
 
@@ -4365,159 +4260,6 @@ function getProgressionContributionItems(data, period) {
   }).filter(x => x.value !== 0);
 }
 
-function drawProgressionContributionCanvas(canvas, items, period, hoverId = null) {
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width, h = canvas.height;
-  const positives = items.filter(x => x.value > 0).sort((a, b) => b.value - a.value);
-  const negatives = items.filter(x => x.value < 0).sort((a, b) => b.value - a.value);
-  const posTotal = positives.reduce((s, x) => s + x.value, 0);
-  const negTotal = negatives.reduce((s, x) => s + Math.abs(x.value), 0);
-  const net = items.reduce((s, x) => s + x.value, 0);
-  ctx.clearRect(0, 0, w, h);
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, w, h);
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'alphabetic';
-
-  const drawEmptyDonut = (cx, cy, r, title, accent) => {
-    ctx.fillStyle = accent;
-    ctx.font = '900 16px Inter, Segoe UI, Arial';
-    ctx.fillText(title, cx, 31);
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.strokeStyle = '#e6eef7';
-    ctx.lineWidth = 24;
-    ctx.stroke();
-    ctx.fillStyle = '#8fa3ba';
-    ctx.font = '800 13px Inter, Segoe UI, Arial';
-    ctx.fillText('Geen waarde', cx, cy + 5);
-  };
-
-  const drawDonut = (list, total, cx, cy, r, title, totalText, accent) => {
-    if (!list.length || !total) {
-      drawEmptyDonut(cx, cy, r, title, accent);
-      return [];
-    }
-    ctx.fillStyle = accent;
-    ctx.font = '900 16px Inter, Segoe UI, Arial';
-    ctx.fillText(title, cx, 31);
-    let start = -Math.PI / 2;
-    const segments = [];
-    list.forEach((item, i) => {
-      const value = Math.abs(item.value);
-      const angle = value / total * Math.PI * 2;
-      const color = pieSegmentColor(item.key, i);
-      const id = title + '|' + item.key;
-      item._contributionColor = color;
-      const isHover = hoverId === id;
-      drawGradientPieSegment(ctx, cx, cy, r, start, start + angle, color, { offset: isHover ? 8 : 0, strokeWidth: isHover ? 4 : 3 });
-      segments.push({ id, startAngle: start, endAngle: start + angle, label: item.label, value, total, cx, cy, r });
-      start += angle;
-    });
-    ctx.beginPath();
-    ctx.arc(cx, cy, r * .54, 0, Math.PI * 2);
-    ctx.fillStyle = '#ffffff';
-    ctx.fill();
-    ctx.strokeStyle = '#d6e4f2';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-    ctx.fillStyle = '#5f7288';
-    ctx.font = '800 12px Inter, Segoe UI, Arial';
-    ctx.fillText(period, cx, cy - 6);
-    ctx.fillStyle = '#003b71';
-    ctx.font = '950 15px Inter, Segoe UI, Arial';
-    ctx.fillText(totalText, cx, cy + 14);
-    return segments;
-  };
-
-  const posSegments = drawDonut(positives, posTotal, Math.round(w * .27), Math.round(h * .55), 88, 'Positieve progressie', euro.format(posTotal), '#003b71');
-  const negSegments = drawDonut(negatives, negTotal, Math.round(w * .73), Math.round(h * .55), 88, 'Negatieve progressie', '-' + euro.format(negTotal), '#d85f2a');
-  canvas._pieSegments = [...posSegments, ...negSegments];
-  return { posTotal, negTotal, net, positives, negatives };
-}
-function renderProgressionContributionChart(data, currP, canvas, legend) {
-  const items = getProgressionContributionItems(data, currP);
-  if (!items.length) {
-    legend.innerHTML = `<div class="pieEmpty">${msg('progressiePieEmpty')}</div>`;
-    const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
-    productionPieState = { segments: [], total: 0 };
-    return;
-  }
-  canvas._progressPieItems = items;
-  canvas._progressPiePeriod = currP;
-  canvas._progressHoverId = null;
-  const totals = drawProgressionContributionCanvas(canvas, items, currP);
-
-  // ── Hover-tooltip op taartgrafieken ──────────────────────────────────────
-  if (!canvas._pieTooltipAttached) {
-    canvas._pieTooltipAttached = true;
-    const tip = document.createElement('div');
-    tip.style.cssText = 'position:fixed;pointer-events:none;background:#10243c;color:#fff;border-radius:12px;padding:8px 13px;font-size:13px;font-weight:800;z-index:9999;display:none;white-space:nowrap;box-shadow:0 14px 34px rgba(15,23,42,.32);transform:translate(12px,-55%)';
-    document.body.appendChild(tip);
-    canvas.addEventListener('mousemove', e => {
-      if (canvas.dataset.pieMode !== 'progressie') return;
-      const segs = canvas._pieSegments || [];
-      const rect = canvas.getBoundingClientRect();
-      const scaleX = canvas.width / rect.width;
-      const scaleY = canvas.height / rect.height;
-      const mx = (e.clientX - rect.left) * scaleX;
-      const my = (e.clientY - rect.top) * scaleY;
-      let found = null;
-      for (const seg of segs) {
-        const dx = mx - seg.cx, dy = my - seg.cy;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist > seg.r * .54 && dist <= seg.r) {
-          let angle = Math.atan2(dy, dx);
-          // Normaliseer hoek tov starthoek (-π/2)
-          if (angle < -Math.PI / 2) angle += Math.PI * 2;
-          let sa = seg.startAngle, ea = seg.endAngle;
-          if (sa < -Math.PI / 2) { sa += Math.PI * 2; ea += Math.PI * 2; }
-          if (angle >= sa && angle <= ea) { found = seg; break; }
-        }
-      }
-      if (found) {
-        if (canvas._progressHoverId !== found.id) {
-          canvas._progressHoverId = found.id;
-          drawProgressionContributionCanvas(canvas, canvas._progressPieItems || [], canvas._progressPiePeriod || '', found.id);
-        }
-        const pctVal = found.total ? (found.value / found.total * 100) : 0;
-        tip.textContent = `${found.label}  ${pct.format(pctVal)}%`;
-        tip.style.display = 'block';
-        tip.style.left = e.clientX + 'px';
-        tip.style.top = e.clientY + 'px';
-        canvas.style.cursor = 'pointer';
-      } else {
-        tip.style.display = 'none';
-        canvas.style.cursor = '';
-        if (canvas._progressHoverId) {
-          canvas._progressHoverId = null;
-          drawProgressionContributionCanvas(canvas, canvas._progressPieItems || [], canvas._progressPiePeriod || '');
-        }
-      }
-    });
-    canvas.addEventListener('mouseleave', () => { if (canvas.dataset.pieMode !== 'progressie') return; tip.style.display = 'none'; canvas.style.cursor = ''; if (canvas._progressHoverId) { canvas._progressHoverId = null; drawProgressionContributionCanvas(canvas, canvas._progressPieItems || [], canvas._progressPiePeriod || ''); } });
-  }
-  const { posTotal, negTotal, net, positives, negatives } = totals;
-  const totalAbs = Math.max(1, posTotal + negTotal);
-  const posWidth = posTotal / totalAbs * 100;
-  const negWidth = negTotal / totalAbs * 100;
-  const itemHtml = item => {
-    const isPos = item.value >= 0;
-    const base = isPos ? posTotal : negTotal;
-    const share = base ? Math.abs(item.value) / base * 100 : 0;
-    const color = item._contributionColor || pieSegmentColor(item.key, 0);
-    const clsName = isPos ? 'positive' : 'negative';
-    const pool = isPos ? 'van positief totaal' : 'van negatief totaal';
-    return `<div class="pieLegendItem contributionItem ${clsName}" style="--share:${Math.min(100, share)}%;--share-bg:${isPos ? 'rgba(0,59,113,.10)' : 'rgba(216,95,42,.12)'}"><span class="pieSwatch" style="background:${color}"></span><div class="pieLegendName">${esc(item.label)}<span class="pieLegendPct">${pct.format(share)}% ${pool}</span></div><div class="pieLegendValue">${euro.format(item.value)}</div></div>`;
-  };
-  const posLabel = posWidth > 13 ? `+${pct.format(posWidth)}%` : '';
-  const negLabel = negWidth > 13 ? `-${pct.format(negWidth)}%` : '';
-  const netClass = net >= 0 ? 'pos' : 'neg';
-  productionPieState = { segments: [], total: 0 };
-  legend.innerHTML = `<div class="netProgressBlock"><div class="netProgressHead"><div>Netto Progressie <span>${esc(currP)}</span></div><div class="netProgressValue ${netClass}">${euro.format(net)}</div></div><div class="netProgressStack"><div class="netProgressSegment pos" style="width:${posWidth}%">${posLabel}</div><div class="netProgressSegment neg" style="width:${negWidth}%">${negLabel}</div></div><div class="netProgressMeta"><div>Positieve progressie<b>${euro.format(posTotal)}</b></div><div>Negatieve progressie<b>-${euro.format(negTotal)}</b></div></div></div>` +
-    (positives.length ? `<div class="contributionGroupTitle">Positieve bijdragen</div>` + positives.map(itemHtml).join('') : '') +
-    (negatives.length ? `<div class="contributionGroupTitle">Negatieve bijdragen</div>` + negatives.map(itemHtml).join('') : '');
-}
 function getProductionPieItems(data, period, mode = 'productie') {
   // Taartgrafieken tonen bewust de commerciële takken i.p.v. louter hoofdcategorieën.
   // Particulieren wordt opgesplitst in Brand en BA; de kleinere restcategorieën van
