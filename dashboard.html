@@ -15,7 +15,7 @@
   <div class="releaseNotesDialog">
     <div class="releaseNotesHead"><h2 id="releaseNotesTitle">Release notes</h2><button type="button" class="releaseNotesClose" id="releaseNotesCloseBtn" aria-label="Sluiten">×</button></div>
     <div class="releaseNotesStatus" id="releaseNotesStatus">Release notes laden…</div>
-    <pre class="releaseNotesContent hidden" id="releaseNotesContent" tabindex="0"></pre>
+    <div class="releaseNotesContent hidden" id="releaseNotesContent" tabindex="0"></div>
     <iframe class="releaseNotesFrame hidden" id="releaseNotesFrame" title="Release notes"></iframe>
   </div>
 </div>
@@ -92,9 +92,9 @@
         <div class="viewDropdownWrap" id="viewDropdownWrap">
           <span class="toolbarLabel" id="viewModeLabel">Weergave</span>
           <div class="view360AnalysisToggle viewModeSegmented" id="viewModeControls" role="group" aria-label="Weergave">
+              <button type="button" class="active" data-view="all" id="viewAllBtn">Hoofd- en subcategorieën</button>
               <button type="button" data-view="main" id="viewMainBtn">Hoofdcategorieën</button>
               <button type="button" data-view="sub" id="viewSubBtn">Subcategorieën</button>
-              <button type="button" class="active" data-view="all" id="viewAllBtn">Hoofd- en subcategorieën</button>
           </div>
         </div>
         <label class="previousYearsControl" id="previousYearsControl"><input type="checkbox" id="previousYearsToggle"><span id="previousYearsToggleLabel">Vorige jaren</span></label>
@@ -137,7 +137,7 @@
 
     <section id="view360" class="section">
       <div class="card full">
-        <div class="titleExportRow"><div class="sectionTitleWrap"><h2 id="view360Title">360-view</h2><span class="sectionBrokerInline" id="view360BrokerInline"></span><span class="sectionPeriodInline" id="view360PeriodInline"></span></div><div class="sectionToolbarSlot"></div><div class="view360AnalysisToggle view360GlobalToggle" role="group" aria-label="Analyseweergave"><button type="button" class="active" data-view360-analysis="main" id="view360MainBtn">Hoofdcategorieën</button><button type="button" data-view360-analysis="sub" id="view360SubBtn">Subcategorieën</button><button type="button" data-view360-analysis="all" id="view360AllBtn">Hoofd- en subcategorieën</button></div><div class="blockExportActions" data-export-target="view360All" aria-label="360-view exporteren"><button type="button" class="blockExportBtn blockExportDownload" title="Download 360-view als PNG"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button><button type="button" class="blockExportBtn blockExportCopy" title="Kopieer 360-view als afbeelding"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span style="font-size:11px;font-weight:950;padding-left:4px">Kopieer</span></button></div></div>
+        <div class="titleExportRow"><div class="sectionTitleWrap"><h2 id="view360Title">360-view</h2><span class="sectionBrokerInline" id="view360BrokerInline"></span><span class="sectionPeriodInline" id="view360PeriodInline"></span></div><div class="sectionToolbarSlot"></div><div class="view360AnalysisToggle view360GlobalToggle" role="group" aria-label="Analyseweergave"><button type="button" class="active" data-view360-analysis="all" id="view360AllBtn">Hoofd- en subcategorieën</button><button type="button" data-view360-analysis="main" id="view360MainBtn">Hoofdcategorieën</button><button type="button" data-view360-analysis="sub" id="view360SubBtn">Subcategorieën</button></div><div class="blockExportActions" data-export-target="view360All" aria-label="360-view exporteren"><button type="button" class="blockExportBtn blockExportDownload" title="Download 360-view als PNG"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button><button type="button" class="blockExportBtn blockExportCopy" title="Kopieer 360-view als afbeelding"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span style="font-size:11px;font-weight:950;padding-left:4px">Kopieer</span></button></div></div>
         <div id="view360Content" class="view360Stack"></div>
       </div>
     </section>
@@ -249,6 +249,102 @@
   <div class="footer-disclaimer">ontwikkeld door Hans von der Crone</div>
 </div>
 
+<script type="text/plain" id="releaseNotesFallback">
+v1.5.26
+lancering 1e versie
+toevoeging van PDF export functionaliteit
+toevoeging van taartdiagram verdiende premie onder portefeuille
+check import PDF
+import-scherm klapt dicht na importeren pdf
+werkt nu ook voor AM/CDR cijfers
+onderverdelingen snel open/dicht te klikken met knop "alles tonen/beperkte weergave"
+mogelijkheid om enkel hoofdblokken of subcategorieën te tonen
+kleurbalkjes consistent gemaakt qua layout/kleur over alle tabs
+taartdiagrammen aangepast, met hoverfunctionaliteit
+volgorde negatieve/positieve progressie juistgezet onderaan
+enkel foutjes rechtgezet bij keuzes weergave
+verdeling portefeuille toevoegd aan PDF
+gemiddelde schadelast toegevoegd per categorie
+% verval toegevoegd onder sectie "vervalpremie"
+mogelijkheid toegevoegd om elk blok te downloaden of in geheugen te zetten (copy) als PNG bestand
+KPI's bovenaan wijzigen ifv gekozen tab met relevante info
+taartdiagrammen onderaan tonen nu ook telkens vergelijking vorig jaar (volledig jaar)
+taartdiagrammen hebben nieuwe layout, info bubbels verschijnen nu ook als je in legende hovert
+bij progressie staat nu een ander type grafiek (waterfall-grafiek) + legenda met vergelijking
+de S/P Kpi's tonen nu ook verschil in %-punten tov vorig jaar
+
+v4.5.26
+tekstuele informatie bij de samenvatting wat leesbaarder gemaakt met sortering op %
+bij detail per categorie S/P en afgetopte S/P vermeld met vergelijking
+mooiere uitlijning van de detailblokken + consistent lettertype
+periode wordt vermeld als MAAND/JAAR ipv MAAND JAAR (is visueel duidelijker)
+watervalgrafiek aangepast, is nu duidelijker en juister
+euro notatie volgens Belgische norm
+
+v9.5.26
+op verzoek collega's overal waar delta S/P wordt getoond, aangepast zodat dit absolute verschil toont ipv rekenkundig verschil, we spreken bij makelaars ook altijd over absolute stijging/daling
+bij verval info toegevoegd rond verval vs verdiede premie
+miniblokken 'verval door klant' en 'verval door maatschappij' verborgen onder selectieknop (is niet altijd relevant en neemt veel plaats op scherm)
+staafgrafieken bij de categorieblokken anders ingedeeld, visueel sterker
+PDFs grondig aangepast en uitgebreid
+delta's toegevoegd naast elke balk 'laatste periode' in de miniblokken
+detail per categorie toegevoegd aan pdf
+
+v12.5.26
+keuzemenu toegevoegd aan de PDF export zodat je delen kan kiezen
+PDF export + csv export makkelijker bereikbaar gemaakt (rechtsboven), zat voorheen in submenu
+weergave-keuze knop met dropdown en op logischere plaats gezet
+verdeling portefeuille toegevoegd aan pdf
+import knop rechtsboven voorzien naast export PDF
+layout tabs wat visueel aangepast, taalkeuze staat nu ook in 1 balk (meer plaats)
+subtiele animaties toegevoegd
+als je op een KPI klikt, dan springt pagina naar betreffende categorie voor detail
+
+v13.5.26
+versienummer toegevoegd rechtsboven
+
+v18.5.26
+op tabblad schade is rechtsbijstand weggehaald als KPI en TOTAAL NON LIFE toegevoegd, staat helemaal links gevolgd door de belangrijkste takken
+KPI's op beginscherm visueel wat aangepast met grafiek
+bij schade kan je nu op de KPI's switchen tussen afgetopte/niet-afgetopt
+
+v29.5.26
+bug opgelost bij progressie grafiek in KPI
+KPI's tabblad toegevoegd met selectiemogelijkheid
+KPI's op tabblad kunnen nu ook gedownload/gecopy-paste worden
+
+v08.06.26
+werkt nu volledig offline 
+
+v15.06.26
+hover buttons hebben subtiele blauwe achtergrond indien geselecteerd
+staafgrafieken bij samenvatting iets dikker gemaakt
+pdf export aangepast zodat de KPI's bij samenvatting er nu ook op staan, en grafieken iets duidelijker zijn
+subtiele animatie toegevoegd bij opvullen balkjes
+vivium logo terug in orde (was verdwenen in vorige versie)
+hover-info overal gelijkgetrokken qua layout/kleuren
+foutje verwijderd in hover-over bij portefeuille J-1
+
+v16.06.26
+download/kopiëren buttons aangepast
+nieuwe icoontjes die professioneler ogen
+samenvattingtekst aangepast met meer nuance bij lichte/medium stijging/daling
+portefeuille kan nu ook wisselen tussen enkel hoofdcategorieën/subcategorieën
+download/copy knoppen subtieler als hangende knop gemaakt aan kaders (=visueel sterker)
+
+v03.09.26
+als er reeds een PDF is geimporteerd en je wil een nieuwe opladen, dan krijg je nu meteen het dialoogvenster om bestand te zoeken ipv nogmaals te moeten klikken
+bij de tabs waar van toepassing, kan je nu meteen kiezen om de voorgaande 3j ook te tonen in de info (stond voorheen wat verborgen in dropdown hoofd/subcat)
+bij de KPI's kan je nu ook de voorgaande jaren tonen
+tabbalk is aangepast zodat je bij kleinere schermresoluties toch nog alle keuzes ziet
+keuzes voor categorieën duidelijker gemaakt en op andere, meer consistente positie naast mogelijkheid voor tonen alle jaren
+keuzeknop alles tonen/beperkte weergave hernoemd naar alles uitklappen/inklappen
+info ultimo vermeld onder titelbalk, zodat je meteen ook kan zien tot welke ultimo datum info op dashboard staat
+tabbalk aangepast zodat die op één lijn past op laptopschermen VIVIUM resolutie 1920x1200 (stond voorheen op 2 lijnen)
+in de taartinfo bij schade naast verdeling schadelast ook de S/P's vermeld in hover-over
+door te klikken op versienummer rechtsboven, krijg je nu ook de releasenotes te zien
+startpagina aantrekkelijker gemaakt met extra uitleg
+</script>
 <script src="dashboard.js"></script>
 
 

@@ -91,6 +91,33 @@ function scrollReleaseNotesToLatest() {
   if (!content) return;
   requestAnimationFrame(() => requestAnimationFrame(() => { content.scrollTop = content.scrollHeight; }));
 }
+function renderReleaseNotes(rawText) {
+  const content = $('releaseNotesContent');
+  if (!content) return;
+  const fragment = document.createDocumentFragment();
+  let list = null;
+  String(rawText || '').split(/\r?\n/).forEach(rawLine => {
+    const line = rawLine.trim();
+    if (!line) { list = null; return; }
+    if (/^v\d{1,2}(?:\.\d{1,2}){2}$/i.test(line)) {
+      const title = document.createElement('h3');
+      title.className = 'releaseNotesVersion';
+      title.textContent = line;
+      fragment.appendChild(title);
+      list = null;
+      return;
+    }
+    if (!list) {
+      list = document.createElement('ul');
+      list.className = 'releaseNotesList';
+      fragment.appendChild(list);
+    }
+    const item = document.createElement('li');
+    item.textContent = line.replace(/^[•*\-]\s*/, '');
+    list.appendChild(item);
+  });
+  content.replaceChildren(fragment);
+}
 async function openReleaseNotesModal() {
   const modal = $('releaseNotesModal');
   const content = $('releaseNotesContent');
@@ -114,17 +141,38 @@ async function openReleaseNotesModal() {
   try {
     const response = await fetch(new URL('release notes.txt', window.location.href), { cache: 'no-store' });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    content.textContent = await response.text();
+    renderReleaseNotes(await response.text());
     releaseNotesLoaded = true;
     status.classList.add('hidden');
     content.classList.remove('hidden');
     scrollReleaseNotesToLatest();
   } catch (error) {
+    const embeddedNotes = $('releaseNotesFallback')?.textContent || '';
+    if (embeddedNotes.trim()) {
+      renderReleaseNotes(embeddedNotes);
+      releaseNotesLoaded = true;
+      status.classList.add('hidden');
+      frame?.classList.add('hidden');
+      content.classList.remove('hidden');
+      scrollReleaseNotesToLatest();
+      return;
+    }
     if (window.location.protocol === 'file:' && frame) {
       status.classList.add('hidden');
       frame.classList.remove('hidden');
       frame.onload = () => {
-        try { frame.contentWindow.scrollTo(0, frame.contentDocument.documentElement.scrollHeight); } catch (_) {}
+        try {
+          const localText = frame.contentDocument?.body?.innerText || '';
+          if (localText.trim()) {
+            renderReleaseNotes(localText);
+            frame.classList.add('hidden');
+            content.classList.remove('hidden');
+            releaseNotesLoaded = true;
+            scrollReleaseNotesToLatest();
+          } else {
+            frame.contentWindow.scrollTo(0, frame.contentDocument.documentElement.scrollHeight);
+          }
+        } catch (_) {}
       };
       frame.src = new URL('release notes.txt', window.location.href).href;
     } else {
@@ -169,7 +217,7 @@ let dashboardCurrentPeriod = null;
 let dashboardPreviousPeriod = null;
 let viewMode = 'all';
 let previousYearsMode = false;
-let view360AnalysisMode = 'main';
+let view360AnalysisMode = 'all';
 let drillMode = true;
 let productionPieState = { segments: [], total: 0 };
 let topInfoCollapsed = false;
@@ -604,7 +652,7 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       const scrollY = window.scrollY;
       const requestedMode = analysisBtn.dataset.view360Analysis;
-      view360AnalysisMode = ['main', 'sub', 'all'].includes(requestedMode) ? requestedMode : 'main';
+      view360AnalysisMode = ['all', 'main', 'sub'].includes(requestedMode) ? requestedMode : 'all';
       document.querySelectorAll('[data-view360-analysis]').forEach(btn => btn.classList.toggle('active', btn.dataset.view360Analysis === view360AnalysisMode));
       render360View();
       requestAnimationFrame(() => window.scrollTo({ top: scrollY, left: 0, behavior: 'auto' }));
